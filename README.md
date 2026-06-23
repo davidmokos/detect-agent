@@ -128,3 +128,7 @@ const strategy: DetectionStrategy = {
   }
 };
 ```
+
+## License
+
+MIT
