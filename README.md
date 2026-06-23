@@ -83,18 +83,14 @@ Environment-variable detection:
 
 Process-tree detection:
 
-- Aider
-- Amazon Q
-- Codeium
 - Codex
-- Continue
 - Cursor
+- Devin
 - Gemini CLI
 - GitHub Copilot CLI
 - Kilo Code
 - Claude Code
 - OpenCode
-- Windsurf
 
 Process-tree detection is best-effort. Some sandboxes block `ps`, so environment-variable matches are preferred when available.
 

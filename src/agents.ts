@@ -42,6 +42,11 @@ export const defaultAgents = [
     process: [{ pattern: /^opencode$/i }]
   },
   {
+    id: "devin",
+    name: "Devin",
+    process: [{ pattern: /devin/i }]
+  },
+  {
     id: "gemini",
     name: "Gemini CLI",
     env: [
@@ -92,30 +97,5 @@ export const defaultAgents = [
     ],
     process: [{ pattern: /^(github-copilot-cli|copilot)$/i }],
     sessionEnv: ["COPILOT_AGENT_SESSION_ID"]
-  },
-  {
-    id: "aider",
-    name: "Aider",
-    process: [{ pattern: /^aider$/i }]
-  },
-  {
-    id: "amazon-q",
-    name: "Amazon Q",
-    process: [{ pattern: /^(amazon-q|q)$/i }]
-  },
-  {
-    id: "codeium",
-    name: "Codeium",
-    process: [{ pattern: /^codeium$/i }]
-  },
-  {
-    id: "continue",
-    name: "Continue",
-    process: [{ pattern: /^continue$/i }]
-  },
-  {
-    id: "windsurf",
-    name: "Windsurf",
-    process: [{ pattern: /^windsurf$/i }]
   }
 ] satisfies readonly AgentDefinition[];

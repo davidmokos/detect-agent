@@ -4,16 +4,12 @@ export type AgentId =
   | "codex"
   | "copilot"
   | "cursor"
+  | "devin"
   | "gemini"
   | "kilocode"
   | "claude-code"
   | "opencode"
-  | "pi"
-  | "aider"
-  | "amazon-q"
-  | "codeium"
-  | "continue"
-  | "windsurf";
+  | "pi";
 
 export type DetectionStrategyName = "environment" | "process-tree";
 

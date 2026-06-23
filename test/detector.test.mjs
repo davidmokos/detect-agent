@@ -77,6 +77,30 @@ test("process tree detection can detect opencode without env vars", () => {
   assert.equal(result.confidence.score, 0.65);
 });
 
+test("process tree detection can detect devin in the hierarchy", () => {
+  const processes = new Map([
+    [200, { pid: 200, ppid: 190, command: "node" }],
+    [190, { pid: 190, ppid: 180, command: "/usr/local/bin/devin" }],
+    [180, { pid: 180, ppid: 1, command: "zsh" }]
+  ]);
+  const strategy = new ProcessTreeDetectionStrategy({
+    read(pid) {
+      return processes.get(pid);
+    }
+  });
+
+  const result = detectAgent({
+    env: {},
+    pid: 200,
+    strategies: [strategy]
+  });
+
+  assert.equal(result.detected, true);
+  assert.equal(result.agent.id, "devin");
+  assert.equal(result.confidence.level, "medium");
+  assert.equal(result.confidence.score, 0.65);
+});
+
 test("custom agents can be added without custom detector code", () => {
   const result = detectAgent({
     agents: [
