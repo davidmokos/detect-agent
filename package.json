@@ -5,7 +5,7 @@
   "type": "module",
   "sideEffects": false,
   "bin": {
-    "detect-agent": "./dist/cli.js"
+    "detect-agent": "dist/cli.js"
   },
   "exports": {
     ".": {

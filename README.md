@@ -6,6 +6,8 @@ The package is designed around small detection strategies and data-driven agent 
 
 ## Install
 
+Install from npm:
+
 ```sh
 npm install agent-cli-detector
 ```
