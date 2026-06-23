@@ -40,6 +40,52 @@ test("normalizes session ids across agent-specific environment variables", () =>
   assert.equal(result.confidence.signals, 2);
 });
 
+test("detects kiro and normalizes its session id", () => {
+  const result = detectAgent({
+    env: {
+      KIRO_SESSION_ID: "a537a99b-b87d-450b-ace9-74231e3f4fe8"
+    },
+    includeProcessTree: false
+  });
+
+  assert.equal(result.detected, true);
+  assert.deepEqual(result.agent, {
+    id: "kiro",
+    name: "Kiro",
+    sessionId: "a537a99b-b87d-450b-ace9-74231e3f4fe8"
+  });
+  assert.equal(result.confidence.level, "medium");
+  assert.equal(result.confidence.score, 0.75);
+});
+
+test("process tree detection can detect kiro in the hierarchy", () => {
+  const processes = new Map([
+    [62926, { pid: 62926, ppid: 53313, command: "sh" }],
+    [53313, { pid: 53313, ppid: 53303, command: "kiro-cli-chat" }],
+    [53303, { pid: 53303, ppid: 52756, command: "bun" }],
+    [52756, { pid: 52756, ppid: 51504, command: "kiro-cli-chat" }],
+    [51504, { pid: 51504, ppid: 47657, command: "kiro-cli" }],
+    [47657, { pid: 47657, ppid: 1, command: "zsh" }]
+  ]);
+  const strategy = new ProcessTreeDetectionStrategy({
+    read(pid) {
+      return processes.get(pid);
+    }
+  });
+
+  const result = detectAgent({
+    env: {},
+    pid: 62926,
+    strategies: [strategy]
+  });
+
+  assert.equal(result.detected, true);
+  assert.equal(result.agent.id, "kiro");
+  assert.equal(result.confidence.level, "high");
+  assert.equal(result.confidence.score, 0.957);
+  assert.equal(result.confidence.signals, 3);
+});
+
 test("does not detect unrelated environment variables", () => {
   const result = detectAgent({
     env: {

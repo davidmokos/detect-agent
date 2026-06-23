@@ -71,6 +71,13 @@ export const defaultAgents = [
     env: [{ name: "PI_CODING_AGENT", value: "true" }]
   },
   {
+    id: "kiro",
+    name: "Kiro",
+    env: [{ name: "KIRO_SESSION_ID" }],
+    process: [{ pattern: /kiro/i }],
+    sessionEnv: ["KIRO_SESSION_ID"]
+  },
+  {
     id: "cline",
     name: "Cline",
     env: [{ name: "CLINE_WRAPPER_PATH" }],

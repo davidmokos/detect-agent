@@ -63,7 +63,7 @@ Exit codes:
 }
 ```
 
-`sessionId` is normalized from agent-specific environment variables when available, such as `CODEX_THREAD_ID`, `CURSOR_CONVERSATION_ID`, `CLAUDE_CODE_SESSION_ID`, `ANTIGRAVITY_TRAJECTORY_ID`, `KILO_RUN_ID`, and `COPILOT_AGENT_SESSION_ID`.
+`sessionId` is normalized from agent-specific environment variables when available, such as `CODEX_THREAD_ID`, `CURSOR_CONVERSATION_ID`, `CLAUDE_CODE_SESSION_ID`, `ANTIGRAVITY_TRAJECTORY_ID`, `KIRO_SESSION_ID`, `KILO_RUN_ID`, and `COPILOT_AGENT_SESSION_ID`.
 
 Confidence is a heuristic score from `0` to `1`, not a statistical probability. Exact agent-owned environment markers score highest, presence-only environment markers score medium-high, and process-tree signals score medium by default. Multiple signals for the same agent are combined with `1 - product(1 - signalScore)`, so corroborating evidence raises confidence while keeping the score bounded at `1`.
 
@@ -77,6 +77,7 @@ Environment-variable detection:
 - Cursor
 - Gemini CLI
 - GitHub Copilot CLI
+- Kiro
 - Kilo Code
 - Claude Code
 - Pi
@@ -88,6 +89,7 @@ Process-tree detection:
 - Devin
 - Gemini CLI
 - GitHub Copilot CLI
+- Kiro
 - Kilo Code
 - Claude Code
 - OpenCode

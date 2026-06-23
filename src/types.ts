@@ -6,6 +6,7 @@ export type AgentId =
   | "cursor"
   | "devin"
   | "gemini"
+  | "kiro"
   | "kilocode"
   | "claude-code"
   | "opencode"
