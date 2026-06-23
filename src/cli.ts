@@ -49,17 +49,6 @@ function toJsonResult(result: DetectionResult): object {
           name: result.agent.name,
           sessionId: result.agent.sessionId
         },
-    confidence: result.confidence,
-    matches: result.matches.map((match) => ({
-      agent: {
-        id: match.agent.id,
-        name: match.agent.name
-      },
-      strategy: match.strategy,
-      confidence: match.confidence,
-      score: match.score,
-      signal: match.signal,
-      value: match.value
-    }))
+    confidence: result.confidence
   };
 }

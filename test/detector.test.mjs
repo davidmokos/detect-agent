@@ -18,8 +18,6 @@ test("detects an agent from a strong environment variable", () => {
   assert.equal(result.agent.id, "claude-code");
   assert.equal(result.confidence.level, "high");
   assert.equal(result.confidence.score, 0.95);
-  assert.equal(result.matches[0].strategy, "environment");
-  assert.equal(result.matches[0].score, 0.95);
 });
 
 test("normalizes session ids across agent-specific environment variables", () => {
@@ -52,7 +50,7 @@ test("does not detect unrelated environment variables", () => {
 
   assert.equal(result.detected, false);
   assert.equal(result.agent, undefined);
-  assert.deepEqual(result.matches, []);
+  assert.equal(result.confidence, undefined);
 });
 
 test("process tree detection can detect opencode without env vars", () => {
@@ -77,7 +75,6 @@ test("process tree detection can detect opencode without env vars", () => {
   assert.equal(result.agent.id, "opencode");
   assert.equal(result.confidence.level, "medium");
   assert.equal(result.confidence.score, 0.65);
-  assert.equal(result.matches[0].strategy, "process-tree");
 });
 
 test("custom agents can be added without custom detector code", () => {

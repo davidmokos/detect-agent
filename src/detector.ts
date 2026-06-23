@@ -28,16 +28,14 @@ export function detectAgent(options: DetectAgentOptions = {}): DetectionResult {
 
   if (bestMatch === undefined) {
     return {
-      detected: false,
-      matches
+      detected: false
     };
   }
 
   return {
     detected: true,
     agent: bestMatch.detectedAgent,
-    confidence: bestMatch.confidence,
-    matches
+    confidence: bestMatch.confidence
   };
 }
 

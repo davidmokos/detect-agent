@@ -77,7 +77,6 @@ export interface DetectionResult {
   readonly detected: boolean;
   readonly agent?: DetectedAgent;
   readonly confidence?: ConfidenceMeasurement;
-  readonly matches: readonly DetectionEvidence[];
 }
 
 export interface DetectionContext {
