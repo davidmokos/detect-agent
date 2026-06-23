@@ -2,19 +2,16 @@ import { defaultAgents } from "./agents.js";
 import { EnvironmentDetectionStrategy } from "./strategies/environment.js";
 import { ProcessTreeDetectionStrategy } from "./strategies/process-tree.js";
 import type {
+  AgentDefinition,
   Confidence,
+  ConfidenceMeasurement,
   DetectAgentOptions,
+  DetectedAgent,
   DetectionContext,
   DetectionEvidence,
   DetectionResult,
   DetectionStrategy
 } from "./types.js";
-
-const confidenceRank: Record<Confidence, number> = {
-  high: 3,
-  medium: 2,
-  low: 1
-};
 
 export function detectAgent(options: DetectAgentOptions = {}): DetectionResult {
   const agents = options.agents ?? defaultAgents;
@@ -27,7 +24,7 @@ export function detectAgent(options: DetectAgentOptions = {}): DetectionResult {
   };
 
   const matches = strategies.flatMap((strategy) => strategy.detect(context));
-  const bestMatch = selectBestMatch(matches);
+  const bestMatch = selectBestAgent(agents, matches, context.env);
 
   if (bestMatch === undefined) {
     return {
@@ -38,7 +35,7 @@ export function detectAgent(options: DetectAgentOptions = {}): DetectionResult {
 
   return {
     detected: true,
-    agent: bestMatch.agent,
+    agent: bestMatch.detectedAgent,
     confidence: bestMatch.confidence,
     matches
   };
@@ -62,20 +59,64 @@ function defaultStrategies(includeProcessTree = true): readonly DetectionStrateg
   return strategies;
 }
 
-function selectBestMatch(
-  matches: readonly DetectionEvidence[]
-): DetectionEvidence | undefined {
-  return [...matches].sort(compareEvidence)[0];
+interface AgentMatch {
+  readonly agent: AgentDefinition;
+  readonly detectedAgent: DetectedAgent;
+  readonly confidence: ConfidenceMeasurement;
+  readonly evidence: readonly DetectionEvidence[];
 }
 
-function compareEvidence(left: DetectionEvidence, right: DetectionEvidence): number {
-  const confidenceDelta = confidenceRank[right.confidence] - confidenceRank[left.confidence];
+function selectBestAgent(
+  agents: readonly AgentDefinition[],
+  matches: readonly DetectionEvidence[],
+  env: NodeJS.ProcessEnv
+): AgentMatch | undefined {
+  const agentMatches: AgentMatch[] = [];
 
-  if (confidenceDelta !== 0) {
-    return confidenceDelta;
+  for (const agent of agents) {
+    const evidence = matches.filter((match) => match.agent.id === agent.id);
+
+    if (evidence.length === 0) {
+      continue;
+    }
+
+    agentMatches.push({
+      agent,
+      detectedAgent: {
+        id: agent.id,
+        name: agent.name,
+        ...sessionIdProperties(agent, env)
+      },
+      confidence: measureConfidence(evidence),
+      evidence
+    });
   }
 
-  return strategyRank(right.strategy) - strategyRank(left.strategy);
+  return agentMatches.sort(compareAgentMatches)[0];
+}
+
+function measureConfidence(evidence: readonly DetectionEvidence[]): ConfidenceMeasurement {
+  const score = roundScore(1 - evidence.reduce((miss, match) => miss * (1 - match.score), 1));
+
+  return {
+    level: scoreToConfidence(score),
+    score,
+    signals: evidence.length
+  };
+}
+
+function compareAgentMatches(left: AgentMatch, right: AgentMatch): number {
+  const scoreDelta = right.confidence.score - left.confidence.score;
+
+  if (scoreDelta !== 0) {
+    return scoreDelta;
+  }
+
+  return bestStrategyRank(right.evidence) - bestStrategyRank(left.evidence);
+}
+
+function bestStrategyRank(evidence: readonly DetectionEvidence[]): number {
+  return Math.max(...evidence.map((match) => strategyRank(match.strategy)));
 }
 
 function strategyRank(strategy: string): number {
@@ -88,4 +129,35 @@ function strategyRank(strategy: string): number {
   }
 
   return 0;
+}
+
+function sessionIdProperties(
+  agent: AgentDefinition,
+  env: NodeJS.ProcessEnv
+): { readonly sessionId?: string } {
+  for (const envName of agent.sessionEnv ?? []) {
+    const value = env[envName];
+
+    if (value !== undefined && value.length > 0) {
+      return { sessionId: value };
+    }
+  }
+
+  return {};
+}
+
+function scoreToConfidence(score: number): Confidence {
+  if (score >= 0.85) {
+    return "high";
+  }
+
+  if (score >= 0.6) {
+    return "medium";
+  }
+
+  return "low";
+}
+
+function roundScore(score: number): number {
+  return Math.round(score * 1000) / 1000;
 }

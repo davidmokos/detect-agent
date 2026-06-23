@@ -37,11 +37,19 @@ export interface ProcessSignal {
   readonly description?: string;
 }
 
-export interface AgentDefinition {
+export interface AgentIdentity {
   readonly id: AgentId | string;
   readonly name: string;
+}
+
+export interface DetectedAgent extends AgentIdentity {
+  readonly sessionId?: string;
+}
+
+export interface AgentDefinition extends AgentIdentity {
   readonly env?: readonly EnvSignal[];
   readonly process?: readonly ProcessSignal[];
+  readonly sessionEnv?: readonly string[];
 }
 
 export interface ProcessInfo {
@@ -51,17 +59,24 @@ export interface ProcessInfo {
 }
 
 export interface DetectionEvidence {
-  readonly agent: AgentDefinition;
+  readonly agent: AgentIdentity;
   readonly strategy: DetectionStrategyName | string;
   readonly confidence: Confidence;
+  readonly score: number;
   readonly signal: string;
   readonly value?: string;
 }
 
+export interface ConfidenceMeasurement {
+  readonly level: Confidence;
+  readonly score: number;
+  readonly signals: number;
+}
+
 export interface DetectionResult {
   readonly detected: boolean;
-  readonly agent?: AgentDefinition;
-  readonly confidence?: Confidence;
+  readonly agent?: DetectedAgent;
+  readonly confidence?: ConfidenceMeasurement;
   readonly matches: readonly DetectionEvidence[];
 }
 

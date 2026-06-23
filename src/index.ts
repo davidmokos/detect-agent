@@ -13,8 +13,11 @@ export {
 export type {
   AgentDefinition,
   AgentId,
+  AgentIdentity,
   Confidence,
+  ConfidenceMeasurement,
   DetectAgentOptions,
+  DetectedAgent,
   DetectionContext,
   DetectionEvidence,
   DetectionResult,

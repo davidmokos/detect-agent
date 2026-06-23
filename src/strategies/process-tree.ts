@@ -84,13 +84,43 @@ function toEvidence(
   signal: ProcessSignal,
   processInfo: ProcessInfo
 ): DetectionEvidence {
+  const score = scoreForProcessSignal(signal);
+
   return {
-    agent,
+    agent: {
+      id: agent.id,
+      name: agent.name
+    },
     strategy: "process-tree",
-    confidence: signal.confidence ?? "medium",
+    confidence: scoreToConfidence(score),
+    score,
     signal: signal.pattern.toString(),
     value: `${processInfo.pid}:${processInfo.command}`
   };
+}
+
+function scoreForProcessSignal(signal: ProcessSignal): number {
+  if (signal.confidence === "high") {
+    return 0.85;
+  }
+
+  if (signal.confidence === "low") {
+    return 0.4;
+  }
+
+  return 0.65;
+}
+
+function scoreToConfidence(score: number): "high" | "medium" | "low" {
+  if (score >= 0.85) {
+    return "high";
+  }
+
+  if (score >= 0.6) {
+    return "medium";
+  }
+
+  return "low";
 }
 
 function readPsField(pid: number, field: "comm" | "ppid"): string {

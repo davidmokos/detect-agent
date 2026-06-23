@@ -16,8 +16,30 @@ test("detects an agent from a strong environment variable", () => {
 
   assert.equal(result.detected, true);
   assert.equal(result.agent.id, "claude-code");
-  assert.equal(result.confidence, "high");
+  assert.equal(result.confidence.level, "high");
+  assert.equal(result.confidence.score, 0.95);
   assert.equal(result.matches[0].strategy, "environment");
+  assert.equal(result.matches[0].score, 0.95);
+});
+
+test("normalizes session ids across agent-specific environment variables", () => {
+  const result = detectAgent({
+    env: {
+      CURSOR_AGENT: "1",
+      CURSOR_CONVERSATION_ID: "conversation-123"
+    },
+    includeProcessTree: false
+  });
+
+  assert.equal(result.detected, true);
+  assert.deepEqual(result.agent, {
+    id: "cursor",
+    name: "Cursor",
+    sessionId: "conversation-123"
+  });
+  assert.equal(result.confidence.level, "high");
+  assert.equal(result.confidence.score, 0.988);
+  assert.equal(result.confidence.signals, 2);
 });
 
 test("does not detect unrelated environment variables", () => {
@@ -53,6 +75,8 @@ test("process tree detection can detect opencode without env vars", () => {
 
   assert.equal(result.detected, true);
   assert.equal(result.agent.id, "opencode");
+  assert.equal(result.confidence.level, "medium");
+  assert.equal(result.confidence.score, 0.65);
   assert.equal(result.matches[0].strategy, "process-tree");
 });
 
@@ -73,4 +97,5 @@ test("custom agents can be added without custom detector code", () => {
 
   assert.equal(result.detected, true);
   assert.equal(result.agent.id, "example-agent");
+  assert.equal(result.confidence.score, 0.95);
 });

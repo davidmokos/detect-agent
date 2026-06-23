@@ -10,7 +10,8 @@ export const defaultAgents = [
       { name: "CODEX_THREAD_ID" },
       { name: "CODEX_INTERNAL_ORIGINATOR_OVERRIDE", value: /codex/i }
     ],
-    process: [{ pattern: /^codex$/i }]
+    process: [{ pattern: /^codex$/i }],
+    sessionEnv: ["CODEX_THREAD_ID"]
   },
   {
     id: "cursor",
@@ -20,7 +21,8 @@ export const defaultAgents = [
       { name: "CURSOR_CONVERSATION_ID" },
       { name: "CURSOR_EXTENSION_HOST_ROLE", value: "agent-exec" }
     ],
-    process: [{ pattern: /^cursor$/i }]
+    process: [{ pattern: /^cursor$/i }],
+    sessionEnv: ["CURSOR_CONVERSATION_ID"]
   },
   {
     id: "claude-code",
@@ -31,7 +33,8 @@ export const defaultAgents = [
       { name: "CLAUDE_CODE_CHILD_SESSION", value: "1" },
       { name: "CLAUDE_CODE_EXECPATH" }
     ],
-    process: [{ pattern: /^claude$/i }]
+    process: [{ pattern: /^claude$/i }],
+    sessionEnv: ["CLAUDE_CODE_SESSION_ID"]
   },
   {
     id: "opencode",
@@ -54,7 +57,8 @@ export const defaultAgents = [
       { name: "ANTIGRAVITY_AGENT", value: "1" },
       { name: "ANTIGRAVITY_TRAJECTORY_ID" }
     ],
-    process: [{ pattern: /^antigravity$/i }]
+    process: [{ pattern: /^antigravity$/i }],
+    sessionEnv: ["ANTIGRAVITY_TRAJECTORY_ID"]
   },
   {
     id: "pi",
@@ -75,7 +79,8 @@ export const defaultAgents = [
       { name: "KILOCODE_VERSION" },
       { name: "KILO_RUN_ID" }
     ],
-    process: [{ pattern: /^(kilo|kilocode)$/i }]
+    process: [{ pattern: /^(kilo|kilocode)$/i }],
+    sessionEnv: ["KILO_RUN_ID"]
   },
   {
     id: "copilot",
@@ -85,7 +90,8 @@ export const defaultAgents = [
       { name: "COPILOT_AGENT_SESSION_ID" },
       { name: "COPILOT_RUN_APP", value: "1" }
     ],
-    process: [{ pattern: /^(github-copilot-cli|copilot)$/i }]
+    process: [{ pattern: /^(github-copilot-cli|copilot)$/i }],
+    sessionEnv: ["COPILOT_AGENT_SESSION_ID"]
   },
   {
     id: "aider",
