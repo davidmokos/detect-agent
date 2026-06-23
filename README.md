@@ -69,30 +69,25 @@ Confidence is a heuristic score from `0` to `1`, not a statistical probability. 
 
 ## Supported agents
 
-Environment-variable detection:
+The built-in detector uses two strategies:
 
-- Antigravity
-- Cline
-- Codex
-- Cursor
-- Gemini CLI
-- GitHub Copilot CLI
-- Kiro
-- Kilo Code
-- Claude Code
-- Pi
+- `environment`: matches agent-specific environment variables in `process.env`
+- `process-tree`: walks up the current process tree with `ps` and matches ancestor command names
 
-Process-tree detection:
-
-- Codex
-- Cursor
-- Devin
-- Gemini CLI
-- GitHub Copilot CLI
-- Kiro
-- Kilo Code
-- Claude Code
-- OpenCode
+| Agent | Environment strategy | Process-tree strategy | Session ID |
+| --- | --- | --- | --- |
+| Antigravity | `ANTIGRAVITY_AGENT=1`, `ANTIGRAVITY_TRAJECTORY_ID` | `antigravity` | `ANTIGRAVITY_TRAJECTORY_ID` |
+| Claude Code | `CLAUDECODE=1`, `CLAUDE_CODE_SESSION_ID`, `CLAUDE_CODE_CHILD_SESSION=1`, `CLAUDE_CODE_EXECPATH` | `claude` | `CLAUDE_CODE_SESSION_ID` |
+| Cline | `CLINE_WRAPPER_PATH` | `cline` | - |
+| Codex | `CODEX_CI=1`, `CODEX_SHELL=1`, `CODEX_THREAD_ID`, `CODEX_INTERNAL_ORIGINATOR_OVERRIDE` containing `codex` | `codex` | `CODEX_THREAD_ID` |
+| Cursor | `CURSOR_AGENT=1`, `CURSOR_CONVERSATION_ID`, `CURSOR_EXTENSION_HOST_ROLE=agent-exec` | `cursor` | `CURSOR_CONVERSATION_ID` |
+| Devin | - | command containing `devin` | - |
+| Gemini CLI | `GEMINI_CLI=1`, `GEMINI_CLI_NO_RELAUNCH=true` | `gemini` | - |
+| GitHub Copilot CLI | `COPILOT_CLI=1`, `COPILOT_AGENT_SESSION_ID`, `COPILOT_RUN_APP=1` | `github-copilot-cli` or `copilot` | `COPILOT_AGENT_SESSION_ID` |
+| Kiro | `KIRO_SESSION_ID` | command containing `kiro` | `KIRO_SESSION_ID` |
+| Kilo Code | `KILO=1`, `KILOCODE_VERSION`, `KILO_RUN_ID` | `kilo` or `kilocode` | `KILO_RUN_ID` |
+| OpenCode | - | `opencode` | - |
+| Pi | `PI_CODING_AGENT=true` | - | - |
 
 Process-tree detection is best-effort. Some sandboxes block `ps`, so environment-variable matches are preferred when available.
 
