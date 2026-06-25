@@ -1,11 +1,11 @@
 {
   "name": "agent-cli-detector",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Detect whether a JavaScript CLI is running inside a coding agent.",
   "type": "module",
   "sideEffects": false,
   "bin": {
-    "detect-agent": "./dist/cli.js"
+    "detect-agent": "dist/cli.js"
   },
   "exports": {
     ".": {
@@ -22,7 +22,7 @@
     "node": ">=18.18"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node -e \"require('node:fs').chmodSync('dist/cli.js', 0o755)\"",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "test": "npm run build && node --test test/*.test.mjs",
     "prepack": "npm run clean && npm test"

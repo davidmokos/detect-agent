@@ -6,6 +6,8 @@ The package is designed around small detection strategies and data-driven agent 
 
 ## Install
 
+Install from npm:
+
 ```sh
 npm install agent-cli-detector
 ```
@@ -34,8 +36,15 @@ if (isRunningFromAgent()) {
 ## CLI usage
 
 ```sh
-npx detect-agent
-npx detect-agent --json
+npx agent-cli-detector
+npx agent-cli-detector --json
+```
+
+After installing the package, the CLI command is available as `detect-agent`:
+
+```sh
+detect-agent
+detect-agent --json
 ```
 
 Exit codes:
