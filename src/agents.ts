@@ -7,8 +7,7 @@ export const defaultAgents = [
     env: [
       { name: "CODEX_CI", value: "1" },
       { name: "CODEX_SHELL", value: "1" },
-      { name: "CODEX_THREAD_ID" },
-      { name: "CODEX_INTERNAL_ORIGINATOR_OVERRIDE", value: /codex/i }
+      { name: "CODEX_THREAD_ID" }
     ],
     process: [{ pattern: /^codex$/i }],
     sessionEnv: ["CODEX_THREAD_ID"]
@@ -18,8 +17,7 @@ export const defaultAgents = [
     name: "Cursor",
     env: [
       { name: "CURSOR_AGENT", value: "1" },
-      { name: "CURSOR_CONVERSATION_ID" },
-      { name: "CURSOR_EXTENSION_HOST_ROLE", value: "agent-exec" }
+      { name: "CURSOR_CONVERSATION_ID" }
     ],
     process: [{ pattern: /^cursor$/i }],
     sessionEnv: ["CURSOR_CONVERSATION_ID"]
@@ -29,9 +27,7 @@ export const defaultAgents = [
     name: "Claude Code",
     env: [
       { name: "CLAUDECODE", value: "1" },
-      { name: "CLAUDE_CODE_SESSION_ID" },
-      { name: "CLAUDE_CODE_CHILD_SESSION", value: "1" },
-      { name: "CLAUDE_CODE_EXECPATH" }
+      { name: "CLAUDE_CODE_SESSION_ID" }
     ],
     process: [{ pattern: /^claude$/i }],
     sessionEnv: ["CLAUDE_CODE_SESSION_ID"]
@@ -49,10 +45,7 @@ export const defaultAgents = [
   {
     id: "gemini",
     name: "Gemini CLI",
-    env: [
-      { name: "GEMINI_CLI", value: "1" },
-      { name: "GEMINI_CLI_NO_RELAUNCH", value: "true", confidence: "medium" }
-    ],
+    env: [{ name: "GEMINI_CLI", value: "1" }],
     process: [{ pattern: /^gemini$/i }]
   },
   {

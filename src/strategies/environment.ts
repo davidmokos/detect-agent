@@ -1,6 +1,5 @@
 import type {
   AgentDefinition,
-  Confidence,
   DetectionContext,
   DetectionEvidence,
   DetectionStrategy,
@@ -47,49 +46,13 @@ function matchesEnvValue(value: string, matcher: EnvValueMatcher | undefined): b
 }
 
 function toEvidence(agent: AgentDefinition, signal: EnvSignal, value: string): DetectionEvidence {
-  const score = scoreForEnvSignal(signal);
-
   return {
     agent: {
       id: agent.id,
       name: agent.name
     },
     strategy: "environment",
-    confidence: scoreToConfidence(score),
-    score,
     signal: signal.name,
     value
   };
-}
-
-function scoreForEnvSignal(signal: EnvSignal): number {
-  if (signal.confidence !== undefined) {
-    return scoreForConfidence(signal.confidence);
-  }
-
-  return signal.value === undefined ? 0.75 : 0.95;
-}
-
-function scoreForConfidence(confidence: Confidence): number {
-  if (confidence === "high") {
-    return 0.95;
-  }
-
-  if (confidence === "medium") {
-    return 0.75;
-  }
-
-  return 0.4;
-}
-
-function scoreToConfidence(score: number): Confidence {
-  if (score >= 0.85) {
-    return "high";
-  }
-
-  if (score >= 0.6) {
-    return "medium";
-  }
-
-  return "low";
 }
