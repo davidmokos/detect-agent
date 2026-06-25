@@ -14,8 +14,6 @@ export type AgentId =
 
 export type DetectionStrategyName = "environment" | "process-tree";
 
-export type Confidence = "high" | "medium" | "low";
-
 export type EnvValueMatcher =
   | string
   | RegExp
@@ -24,13 +22,11 @@ export type EnvValueMatcher =
 export interface EnvSignal {
   readonly name: string;
   readonly value?: EnvValueMatcher;
-  readonly confidence?: Confidence;
   readonly description?: string;
 }
 
 export interface ProcessSignal {
   readonly pattern: RegExp;
-  readonly confidence?: Confidence;
   readonly description?: string;
 }
 
@@ -58,22 +54,13 @@ export interface ProcessInfo {
 export interface DetectionEvidence {
   readonly agent: AgentIdentity;
   readonly strategy: DetectionStrategyName | string;
-  readonly confidence: Confidence;
-  readonly score: number;
   readonly signal: string;
   readonly value?: string;
-}
-
-export interface ConfidenceMeasurement {
-  readonly level: Confidence;
-  readonly score: number;
-  readonly signals: number;
 }
 
 export interface DetectionResult {
   readonly detected: boolean;
   readonly agent?: DetectedAgent;
-  readonly confidence?: ConfidenceMeasurement;
 }
 
 export interface DetectionContext {
@@ -93,6 +80,6 @@ export interface DetectAgentOptions {
   readonly pid?: number;
   readonly agents?: readonly AgentDefinition[];
   readonly strategies?: readonly DetectionStrategy[];
-  readonly includeProcessTree?: boolean;
+  readonly experimentalProcessTree?: boolean;
   readonly maxProcessDepth?: number;
 }

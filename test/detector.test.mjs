@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  createDefaultStrategies,
   detectAgent,
   EnvironmentDetectionStrategy,
   ProcessTreeDetectionStrategy
@@ -10,14 +11,11 @@ test("detects an agent from a strong environment variable", () => {
   const result = detectAgent({
     env: {
       CLAUDECODE: "1"
-    },
-    includeProcessTree: false
+    }
   });
 
   assert.equal(result.detected, true);
   assert.equal(result.agent.id, "claude-code");
-  assert.equal(result.confidence.level, "high");
-  assert.equal(result.confidence.score, 0.95);
 });
 
 test("normalizes session ids across agent-specific environment variables", () => {
@@ -25,8 +23,7 @@ test("normalizes session ids across agent-specific environment variables", () =>
     env: {
       CURSOR_AGENT: "1",
       CURSOR_CONVERSATION_ID: "conversation-123"
-    },
-    includeProcessTree: false
+    }
   });
 
   assert.equal(result.detected, true);
@@ -35,17 +32,13 @@ test("normalizes session ids across agent-specific environment variables", () =>
     name: "Cursor",
     sessionId: "conversation-123"
   });
-  assert.equal(result.confidence.level, "high");
-  assert.equal(result.confidence.score, 0.988);
-  assert.equal(result.confidence.signals, 2);
 });
 
 test("detects kiro and normalizes its session id", () => {
   const result = detectAgent({
     env: {
       KIRO_SESSION_ID: "a537a99b-b87d-450b-ace9-74231e3f4fe8"
-    },
-    includeProcessTree: false
+    }
   });
 
   assert.equal(result.detected, true);
@@ -54,8 +47,20 @@ test("detects kiro and normalizes its session id", () => {
     name: "Kiro",
     sessionId: "a537a99b-b87d-450b-ace9-74231e3f4fe8"
   });
-  assert.equal(result.confidence.level, "medium");
-  assert.equal(result.confidence.score, 0.75);
+});
+
+test("default strategies only use environment variables", () => {
+  assert.deepEqual(
+    createDefaultStrategies().map((strategy) => strategy.name),
+    ["environment"]
+  );
+});
+
+test("process tree strategy is experimental and opt-in", () => {
+  assert.deepEqual(
+    createDefaultStrategies(true).map((strategy) => strategy.name),
+    ["environment", "process-tree"]
+  );
 });
 
 test("process tree detection can detect kiro in the hierarchy", () => {
@@ -81,22 +86,17 @@ test("process tree detection can detect kiro in the hierarchy", () => {
 
   assert.equal(result.detected, true);
   assert.equal(result.agent.id, "kiro");
-  assert.equal(result.confidence.level, "high");
-  assert.equal(result.confidence.score, 0.957);
-  assert.equal(result.confidence.signals, 3);
 });
 
 test("does not detect unrelated environment variables", () => {
   const result = detectAgent({
     env: {
       PATH: "/usr/bin"
-    },
-    includeProcessTree: false
+    }
   });
 
   assert.equal(result.detected, false);
   assert.equal(result.agent, undefined);
-  assert.equal(result.confidence, undefined);
 });
 
 test("process tree detection can detect opencode without env vars", () => {
@@ -119,8 +119,6 @@ test("process tree detection can detect opencode without env vars", () => {
 
   assert.equal(result.detected, true);
   assert.equal(result.agent.id, "opencode");
-  assert.equal(result.confidence.level, "medium");
-  assert.equal(result.confidence.score, 0.65);
 });
 
 test("process tree detection can detect devin in the hierarchy", () => {
@@ -143,8 +141,6 @@ test("process tree detection can detect devin in the hierarchy", () => {
 
   assert.equal(result.detected, true);
   assert.equal(result.agent.id, "devin");
-  assert.equal(result.confidence.level, "medium");
-  assert.equal(result.confidence.score, 0.65);
 });
 
 test("custom agents can be added without custom detector code", () => {
@@ -164,5 +160,4 @@ test("custom agents can be added without custom detector code", () => {
 
   assert.equal(result.detected, true);
   assert.equal(result.agent.id, "example-agent");
-  assert.equal(result.confidence.score, 0.95);
 });

@@ -48,7 +48,6 @@ function toJsonResult(result: DetectionResult): object {
           id: result.agent.id,
           name: result.agent.name,
           sessionId: result.agent.sessionId
-        },
-    confidence: result.confidence
+        }
   };
 }
