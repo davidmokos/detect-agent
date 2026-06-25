@@ -6,15 +6,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 const projectRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 
 test("packed package can be installed, imported, and run as a CLI", () => {
   const workspace = mkdtempSync(path.join(tmpdir(), "agent-cli-detector-"));
 
   try {
-    const packOutput = execFileSync(
-      npm,
+    const packOutput = execNpm(
       ["pack", "--ignore-scripts", "--json", "--pack-destination", workspace],
       {
         cwd: projectRoot,
@@ -60,7 +58,7 @@ test("packed package can be installed, imported, and run as a CLI", () => {
     ]);
 
     writeFileSync(path.join(workspace, "package.json"), '{"type":"module"}\n');
-    execFileSync(npm, ["install", "--ignore-scripts", "--no-audit", "--no-fund", tarball], {
+    execNpm(["install", "--ignore-scripts", "--no-audit", "--no-fund", tarball], {
       cwd: workspace,
       stdio: "pipe"
     });
@@ -118,3 +116,12 @@ test("packed package can be installed, imported, and run as a CLI", () => {
     rmSync(workspace, { recursive: true, force: true });
   }
 });
+
+function execNpm(args, options) {
+  if (process.env.npm_execpath !== undefined) {
+    return execFileSync(process.execPath, [process.env.npm_execpath, ...args], options);
+  }
+
+  const npm = process.platform === "win32" ? "npm.cmd" : "npm";
+  return execFileSync(npm, args, options);
+}
