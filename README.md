@@ -39,11 +39,11 @@ npx agent-cli-detector
 npx agent-cli-detector --json
 ```
 
-After installing the package, the CLI command is available as `detect-agent`:
+After installing the package, the CLI command is available as `agent-cli-detector`:
 
 ```sh
-detect-agent
-detect-agent --json
+agent-cli-detector
+agent-cli-detector --json
 ```
 
 Exit codes:

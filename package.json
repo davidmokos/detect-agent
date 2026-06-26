@@ -1,28 +1,32 @@
 {
   "name": "agent-cli-detector",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Detect whether a JavaScript CLI is running inside a coding agent.",
   "type": "module",
   "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
-    "detect-agent": "dist/cli.js"
+    "agent-cli-detector": "./dist/cli.js"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
-  "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=18.18"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && node -e \"require('node:fs').chmodSync('dist/cli.js', 0o755)\"",
+    "build": "tsup && node -e \"require('node:fs').chmodSync('dist/cli.js', 0o755)\"",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "test": "npm run build && node --test test/detector.test.mjs test/package.test.mjs",
     "prepack": "npm run clean && npm run build && node --test test/detector.test.mjs"
@@ -38,6 +42,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^24.0.4",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   }
 }
