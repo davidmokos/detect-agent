@@ -8,7 +8,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "agent-cli-detector": "./dist/cli.js"
+    "agent-cli-detector": "dist/cli.js"
   },
   "exports": {
     ".": {
@@ -49,5 +49,13 @@
     "@types/node": "^24.0.4",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidmokos/detect-agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davidmokos/detect-agent/issues"
+  },
+  "homepage": "https://github.com/davidmokos/detect-agent#readme"
 }
