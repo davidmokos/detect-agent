@@ -35,6 +35,7 @@ Officially supported coding agents:
 | Name                                                              | ID            | Session ID |
 | ----------------------------------------------------------------- | ------------- | ---------- |
 | [Antigravity](https://antigravity.google/)                        | `antigravity` | ✅         |
+| [Bolt](https://bolt.new/)                                          | `bolt`        | 🚫         |
 | [Claude Code](https://claude.com/claude-code)                     | `claude-code` | ✅         |
 | [Cline](https://cline.bot/)                                       | `cline`       | 🚫         |
 | [Codex](https://developers.openai.com/codex/)                     | `codex`       | ✅         |
