@@ -49,6 +49,21 @@ test("detects kiro and normalizes its session id", () => {
   });
 });
 
+test("detects replit and normalizes its session id", () => {
+  const result = detectAgent({
+    env: {
+      REPLIT_SESSION: "session-123"
+    }
+  });
+
+  assert.equal(result.detected, true);
+  assert.deepEqual(result.agent, {
+    id: "replit",
+    name: "Replit",
+    sessionId: "session-123"
+  });
+});
+
 test("default strategies only use environment variables", () => {
   assert.deepEqual(
     createDefaultStrategies().map((strategy) => strategy.name),

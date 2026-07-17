@@ -10,7 +10,8 @@ export type AgentId =
   | "kilocode"
   | "claude-code"
   | "opencode"
-  | "pi";
+  | "pi"
+  | "replit";
 
 export type DetectionStrategyName = "environment" | "process-tree";
 

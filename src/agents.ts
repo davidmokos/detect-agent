@@ -64,6 +64,12 @@ export const defaultAgents = [
     env: [{ name: "PI_CODING_AGENT", value: "true" }]
   },
   {
+    id: "replit",
+    name: "Replit",
+    env: [{ name: "REPLIT_SESSION" }],
+    sessionEnv: ["REPLIT_SESSION"]
+  },
+  {
     id: "kiro",
     name: "Kiro",
     env: [{ name: "KIRO_SESSION_ID" }],
