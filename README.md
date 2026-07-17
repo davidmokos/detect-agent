@@ -2,60 +2,61 @@
 
 Detect whether a JavaScript CLI is running inside a coding agent.
 
-The package is designed around environment-variable detection and data-driven agent definitions. Parent-process inspection is available as an experimental opt-in feature for callers that can tolerate best-effort process-tree detection.
+Please [open an issue](https://github.com/davidmokos/detect-agent/issues/new)
+if your coding agent isn't properly detected :)
 
-## Install
+[![npm](https://img.shields.io/npm/v/agent-cli-detector.svg)](https://www.npmjs.com/package/agent-cli-detector)
+[![Tests](https://github.com/davidmokos/detect-agent/actions/workflows/test.yml/badge.svg)](https://github.com/davidmokos/detect-agent/actions)
 
-Install from npm:
+## Installation
 
-```sh
+```bash
 npm install agent-cli-detector
 ```
 
-## Library usage
+## Usage
 
-```ts
-import { detectAgent, isRunningFromAgent } from "agent-cli-detector";
+```js
+import { detectAgent } from "agent-cli-detector";
 
 const result = detectAgent();
 
 if (result.detected) {
-  console.log(`running from ${result.agent.name}`);
-
-  if (result.agent.sessionId) {
-    console.log(`session: ${result.agent.sessionId}`);
-  }
-}
-
-if (isRunningFromAgent()) {
-  // Adjust CLI behavior for agent-driven execution.
+  console.log("The name of the coding agent is:", result.agent.name);
+} else {
+  console.log("This program is not running inside a coding agent");
 }
 ```
 
-## CLI usage
+## Supported agents
 
-```sh
-npx agent-cli-detector
-npx agent-cli-detector --json
-```
+Officially supported coding agents:
 
-After installing the package, the CLI command is available as `agent-cli-detector`:
+| Name                                                              | ID            | Session ID |
+| ----------------------------------------------------------------- | ------------- | ---------- |
+| [Antigravity](https://antigravity.google/)                        | `antigravity` | ✅         |
+| [Claude Code](https://claude.com/claude-code)                     | `claude-code` | ✅         |
+| [Cline](https://cline.bot/)                                       | `cline`       | 🚫         |
+| [Codex](https://developers.openai.com/codex/)                     | `codex`       | ✅         |
+| [Cursor](https://cursor.com/)                                     | `cursor`      | ✅         |
+| [Devin](https://devin.ai/)                                        | `devin`       | 🚫         |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli)         | `gemini`      | 🚫         |
+| [GitHub Copilot CLI](https://github.com/github/copilot-cli)       | `copilot`     | ✅         |
+| [Kilo Code](https://kilocode.ai/)                                 | `kilocode`    | ✅         |
+| [Kiro](https://kiro.dev/)                                         | `kiro`        | ✅         |
+| [OpenCode](https://opencode.ai/)                                  | `opencode`    | 🚫         |
+| [Pi](https://github.com/badlogic/pi-mono)                         | `pi`          | 🚫         |
 
-```sh
-agent-cli-detector
-agent-cli-detector --json
-```
+Detection is data-driven: the exact environment variables and process
+patterns for each agent live in [`src/agents.ts`](src/agents.ts).
 
-Exit codes:
+## API
 
-- `0`: a coding agent was detected
-- `1`: no coding agent was detected
+### `detectAgent([options])`
 
-## Result shape
+Runs detection and returns a `DetectionResult`:
 
-`detectAgent()` returns a normalized agent identity instead of the internal detector definition:
-
-```ts
+```js
 {
   detected: true,
   agent: {
@@ -66,44 +67,79 @@ Exit codes:
 }
 ```
 
-`sessionId` is normalized from agent-specific environment variables when available, such as `CODEX_THREAD_ID`, `CURSOR_CONVERSATION_ID`, `CLAUDE_CODE_SESSION_ID`, `ANTIGRAVITY_TRAJECTORY_ID`, `KIRO_SESSION_ID`, `KILO_RUN_ID`, and `COPILOT_AGENT_SESSION_ID`.
+### `result.detected`
 
-## Supported agents
+A boolean. Will be `true` if the code is running inside a coding agent,
+otherwise `false`.
 
-The built-in detector uses environment variables by default:
+### `result.agent.id`
 
-- `environment`: matches agent-specific environment variables in `process.env`
+A stable identifier for the detected agent (see the ID column in the
+support table above). Prefer comparing against this instead of
+`result.agent.name`.
 
-Process-tree inspection is experimental and turned off by default. Enable it explicitly if you need best-effort parent-process matching:
+### `result.agent.name`
 
-```ts
+A string containing the display name of the detected coding agent.
+
+Don't depend on the value of this string not to change for a specific
+agent. If you find yourself writing `result.agent.name === "Claude Code"`,
+you most likely want to use `result.agent.id === "claude-code"` instead.
+
+### `result.agent.sessionId`
+
+A string containing the agent's session identifier, normalized from
+agent-specific environment variables such as `CODEX_THREAD_ID`,
+`CURSOR_CONVERSATION_ID`, `CLAUDE_CODE_SESSION_ID`,
+`ANTIGRAVITY_TRAJECTORY_ID`, `KIRO_SESSION_ID`, `KILO_RUN_ID`, and
+`COPILOT_AGENT_SESSION_ID`. Omitted when the agent doesn't expose one
+(see the Session ID column in the support table above).
+
+### `isRunningFromAgent([options])`
+
+A convenience shortcut that returns `result.detected` as a boolean:
+
+```js
+import { isRunningFromAgent } from "agent-cli-detector";
+
+if (isRunningFromAgent()) {
+  // Adjust CLI behavior for agent-driven execution.
+}
+```
+
+## CLI
+
+The package also ships a CLI:
+
+```bash
+npx agent-cli-detector
+npx agent-cli-detector --json
+```
+
+Exit codes:
+
+- `0`: a coding agent was detected
+- `1`: no coding agent was detected
+
+## Process-tree detection (experimental)
+
+Detection uses environment variables by default. Parent-process
+inspection is available as an opt-in for callers that can tolerate
+best-effort process-tree matching:
+
+```js
 const result = detectAgent({ experimentalProcessTree: true });
 ```
 
-Process-tree inspection has only been tested on macOS and does not work on Windows.
+Some sandboxes block `ps`, and process names can vary by launcher, so
+process-tree detection should be treated as experimental. It has only
+been tested on macOS and does not work on Windows.
 
-| Agent | Environment strategy | Process-tree strategy | Session ID |
-| --- | --- | --- | --- |
-| Antigravity | `ANTIGRAVITY_AGENT=1`, `ANTIGRAVITY_TRAJECTORY_ID` | `antigravity` | `ANTIGRAVITY_TRAJECTORY_ID` |
-| Claude Code | `CLAUDECODE=1`, `CLAUDE_CODE_SESSION_ID` | `claude` | `CLAUDE_CODE_SESSION_ID` |
-| Cline | `CLINE_WRAPPER_PATH` | `cline` | - |
-| Codex | `CODEX_CI=1`, `CODEX_SHELL=1`, `CODEX_THREAD_ID` | `codex` | `CODEX_THREAD_ID` |
-| Cursor | `CURSOR_AGENT=1`, `CURSOR_CONVERSATION_ID` | `cursor` | `CURSOR_CONVERSATION_ID` |
-| Devin | - | command containing `devin` | - |
-| Gemini CLI | `GEMINI_CLI=1` | `gemini` | - |
-| GitHub Copilot CLI | `COPILOT_CLI=1`, `COPILOT_AGENT_SESSION_ID`, `COPILOT_RUN_APP=1` | `github-copilot-cli` or `copilot` | `COPILOT_AGENT_SESSION_ID` |
-| Kiro | `KIRO_SESSION_ID` | command containing `kiro` | `KIRO_SESSION_ID` |
-| Kilo Code | `KILO=1`, `KILOCODE_VERSION`, `KILO_RUN_ID` | `kilo` or `kilocode` | `KILO_RUN_ID` |
-| OpenCode | - | `opencode` | - |
-| Pi | `PI_CODING_AGENT=true` | - | - |
-
-Some sandboxes block `ps`, and process names can vary by launcher, so process-tree detection should be treated as experimental.
-
-## Extending
+## Custom agents
 
 Add an agent by supplying an `AgentDefinition`:
 
-```ts
+```js
 import { detectAgent, defaultAgents } from "agent-cli-detector";
 
 const result = detectAgent({
@@ -118,6 +154,8 @@ const result = detectAgent({
   ]
 });
 ```
+
+## Custom strategies
 
 Add a detection strategy by implementing `DetectionStrategy`:
 
@@ -134,4 +172,4 @@ const strategy: DetectionStrategy = {
 
 ## License
 
-MIT
+[MIT](LICENSE)
