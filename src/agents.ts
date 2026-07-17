@@ -59,9 +59,24 @@ export const defaultAgents = [
     sessionEnv: ["ANTIGRAVITY_TRAJECTORY_ID"]
   },
   {
+    id: "bolt",
+    name: "Bolt",
+    env: [
+      { name: "BOLT_ENV" },
+      { name: "BOLT_ORIGIN" },
+      { name: "BOLT_SERVER_URL" }
+    ]
+  },
+  {
     id: "pi",
     name: "Pi",
     env: [{ name: "PI_CODING_AGENT", value: "true" }]
+  },
+  {
+    id: "replit",
+    name: "Replit",
+    env: [{ name: "REPLIT_SESSION" }],
+    sessionEnv: ["REPLIT_SESSION"]
   },
   {
     id: "kiro",

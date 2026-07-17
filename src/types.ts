@@ -1,5 +1,6 @@
 export type AgentId =
   | "antigravity"
+  | "bolt"
   | "cline"
   | "codex"
   | "copilot"
@@ -10,7 +11,8 @@ export type AgentId =
   | "kilocode"
   | "claude-code"
   | "opencode"
-  | "pi";
+  | "pi"
+  | "replit";
 
 export type DetectionStrategyName = "environment" | "process-tree";
 

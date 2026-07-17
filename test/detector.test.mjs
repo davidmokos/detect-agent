@@ -49,6 +49,37 @@ test("detects kiro and normalizes its session id", () => {
   });
 });
 
+test("detects replit and normalizes its session id", () => {
+  const result = detectAgent({
+    env: {
+      REPLIT_SESSION: "session-123"
+    }
+  });
+
+  assert.equal(result.detected, true);
+  assert.deepEqual(result.agent, {
+    id: "replit",
+    name: "Replit",
+    sessionId: "session-123"
+  });
+});
+
+test("detects bolt from any known environment variable", () => {
+  for (const envName of ["BOLT_ENV", "BOLT_ORIGIN", "BOLT_SERVER_URL"]) {
+    const result = detectAgent({
+      env: {
+        [envName]: "1"
+      }
+    });
+
+    assert.equal(result.detected, true);
+    assert.deepEqual(result.agent, {
+      id: "bolt",
+      name: "Bolt"
+    });
+  }
+});
+
 test("default strategies only use environment variables", () => {
   assert.deepEqual(
     createDefaultStrategies().map((strategy) => strategy.name),

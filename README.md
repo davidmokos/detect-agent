@@ -35,6 +35,7 @@ Officially supported coding agents:
 | Name                                                              | ID            | Session ID |
 | ----------------------------------------------------------------- | ------------- | ---------- |
 | [Antigravity](https://antigravity.google/)                        | `antigravity` | ✅         |
+| [Bolt](https://bolt.new/)                                          | `bolt`        | 🚫         |
 | [Claude Code](https://claude.com/claude-code)                     | `claude-code` | ✅         |
 | [Cline](https://cline.bot/)                                       | `cline`       | 🚫         |
 | [Codex](https://developers.openai.com/codex/)                     | `codex`       | ✅         |
@@ -46,6 +47,7 @@ Officially supported coding agents:
 | [Kiro](https://kiro.dev/)                                         | `kiro`        | ✅         |
 | [OpenCode](https://opencode.ai/)                                  | `opencode`    | 🚫         |
 | [Pi](https://github.com/badlogic/pi-mono)                         | `pi`          | 🚫         |
+| [Replit](https://replit.com/)                                      | `replit`      | ✅         |
 
 Detection is data-driven: the exact environment variables and process
 patterns for each agent live in [`src/agents.ts`](src/agents.ts).
@@ -92,7 +94,7 @@ A string containing the agent's session identifier, normalized from
 agent-specific environment variables such as `CODEX_THREAD_ID`,
 `CURSOR_CONVERSATION_ID`, `CLAUDE_CODE_SESSION_ID`,
 `ANTIGRAVITY_TRAJECTORY_ID`, `KIRO_SESSION_ID`, `KILO_RUN_ID`, and
-`COPILOT_AGENT_SESSION_ID`. Omitted when the agent doesn't expose one
+`COPILOT_AGENT_SESSION_ID`, and `REPLIT_SESSION`. Omitted when the agent doesn't expose one
 (see the Session ID column in the support table above).
 
 ### `isRunningFromAgent([options])`
