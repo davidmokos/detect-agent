@@ -12,7 +12,8 @@ export type AgentId =
   | "claude-code"
   | "opencode"
   | "pi"
-  | "replit";
+  | "replit"
+  | "rork";
 
 export type DetectionStrategyName = "environment" | "process-tree";
 

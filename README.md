@@ -48,6 +48,7 @@ Officially supported coding agents:
 | [OpenCode](https://opencode.ai/)                                  | `opencode`    | 🚫         |
 | [Pi](https://github.com/badlogic/pi-mono)                         | `pi`          | 🚫         |
 | [Replit](https://replit.com/)                                      | `replit`      | ✅         |
+| [Rork](https://rork.com/)                                          | `rork`        | 🚫         |
 
 Detection is data-driven: the exact environment variables and process
 patterns for each agent live in [`src/agents.ts`](src/agents.ts).
