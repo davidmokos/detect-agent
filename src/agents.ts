@@ -79,6 +79,11 @@ export const defaultAgents = [
     sessionEnv: ["REPLIT_SESSION"]
   },
   {
+    id: "rork",
+    name: "Rork",
+    env: [{ name: "RORK_API_URL" }]
+  },
+  {
     id: "kiro",
     name: "Kiro",
     env: [{ name: "KIRO_SESSION_ID" }],

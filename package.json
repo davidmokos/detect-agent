@@ -1,6 +1,6 @@
 {
   "name": "agent-cli-detector",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Detect whether a JavaScript CLI is running inside a coding agent.",
   "type": "module",
   "sideEffects": false,

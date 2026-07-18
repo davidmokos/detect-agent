@@ -64,6 +64,20 @@ test("detects replit and normalizes its session id", () => {
   });
 });
 
+test("detects rork from RORK_API_URL", () => {
+  const result = detectAgent({
+    env: {
+      RORK_API_URL: "https://api.rork.com"
+    }
+  });
+
+  assert.equal(result.detected, true);
+  assert.deepEqual(result.agent, {
+    id: "rork",
+    name: "Rork"
+  });
+});
+
 test("detects bolt from any known environment variable", () => {
   for (const envName of ["BOLT_ENV", "BOLT_ORIGIN", "BOLT_SERVER_URL"]) {
     const result = detectAgent({
